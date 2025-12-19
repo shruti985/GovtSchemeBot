@@ -1,58 +1,95 @@
+# 🏛️ Govt Health Schemes Bot (Telegram + n8n)
 
-# 🏛️ Govt Health Schemes Bot (n8n + Telegram)
-
-This repository contains an **n8n workflow JSON** that powers a conversational Telegram bot.  
-The bot helps users discover **Indian Government Health & Welfare Schemes** based on their basic eligibility inputs.
-
-Users provide:
-- Age
-- Gender
-- Caste Category
-- State
-
-The workflow then filters schemes stored in Google Sheets and returns relevant matches.
+A conversational Telegram bot made using **n8n** that helps users discover **Indian Government Health & Welfare Schemes**.  
+Users answer a few simple questions (Age, Gender, Caste, State), and the bot filters matching schemes from **Google Sheets** and shows results with **scoring + pagination**.
 
 ---
 
-## 🚀 What this bot does
+## 🚀 Features
 
-✔️ Collects user info step-by-step through Telegram  
-✔️ Validates user inputs (age, strings, etc.)  
-✔️ Uses inline buttons for Gender & Caste  
-✔️ Fetches data from Google Sheets  
-✔️ Scores schemes based on eligibility match  
-✔️ Shows results with pagination (Show more)  
-✔️ Supports restart via `/start`
+- Collects Age with validation  
+- Gender selection using inline buttons  
+- Caste selection via inline buttons  
+- State input  
+- Reads data dynamically from Google Sheets  
+- Scores schemes based on eligibility match  
+- Shows paginated results with "Show More"  
+- Restart anytime using `/start`  
+- No credentials included in repo
 
 ---
 
-## 🧩 Workflow Contents
+## 🧩 What’s Inside
 
-This JSON includes:
+This repo contains **one JSON workflow** that includes:
+
 - Telegram Trigger
-- State-based user flow
-- JavaScript scoring logic
-- Google Sheets read integration
+- User state management
+- Google Sheets read operation
+- JavaScript scoring & filtering
+- Messenger replies with markup
 - Pagination logic
-- Clean restart logic
 
-**Note:**  
-This repo does **not** include any credentials.  
-When you import in n8n, you’ll add your own credentials manually.
+When you import in n8n, you will need to **add your own credentials** for Telegram and Google Sheets.
 
 ---
 
-## 🛠️ Requirements
+## 🛠 Requirements
 
-To use this workflow, you need:
+### **n8n**
+- Local or hosted  
+- Version 1.x recommended
 
-### 🟢 n8n
-- Hosted or local  
-- Version 1.x or above recommended
+### **Telegram Bot**
+- Create using **@BotFather**  
+- Add token to n8n Telegram credentials
 
-### 🟢 Telegram Bot
-- Create via **@BotFather**
-- Copy token and configure inside n8n credentials
+### **Google Sheet**
+- Upload your schemes data to Google Sheets  
+- Connect it via n8n Google Sheets node  
+- Make sure your workflow reads from the correct sheet
 
-### 🟢 Google Sheet
-Your sheet should contain columns for:
+---
+
+## 📥 How to Use
+
+1. Download JSON workflow from this repo  
+2. Open n8n → **Workflows → Import**  
+3. Select the JSON file  
+4. Assign your Telegram + Google Sheets credentials  
+5. Activate the workflow  
+6. Open Telegram and send `/start` to begin
+
+---
+
+## 🔒 Security Notes
+
+- No tokens or secrets are included in this repo  
+- Credentials must be configured locally in n8n  
+- Never publish Telegram or Google credentials publicly
+
+---
+
+## 🧪 Ideas for Improvement
+
+- Income-based filtering  
+- Hindi / multilingual responses  
+- More categories (e.g., Widow, Disability, Farmer)  
+- Scheme bookmarking / sharing  
+- Database storage for chat data
+
+---
+
+## 🤝 Contributions Welcome
+
+- Fork it  
+- Open issues  
+- Submit pull requests  
+
+Suggestions are appreciated!
+
+---
+
+## 📜 License
+
+Free for learning, modification, and personal use.
