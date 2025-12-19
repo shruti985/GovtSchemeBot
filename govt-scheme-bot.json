@@ -1,0 +1,1150 @@
+{
+  "name": "My workflow Finall",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message",
+          "callback_query"
+        ],
+        "additionalFields": {}
+      },
+      "id": "37785177-9621-46a7-ac5e-a2477f5eb2c0",
+      "name": "Telegram Trigger",
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1,
+      "position": [
+        -672,
+        192
+      ],
+      "webhookId": "c0debb60-29a9-4f1e-b765-870054bc1b41",
+      "credentials": {
+        "telegramApi": {
+          "id": "**",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $('Telegram Trigger').item.json.message.text }}",
+              "rightValue": "/start",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              },
+              "id": "c1cd1dd6-ee92-4472-915f-61840919dc38"
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "d48c6ed2-e47b-4bb5-b761-ffd8f51e570d",
+      "name": "Check Start Command",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        -448,
+        192
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.chat_id }}",
+        "text": "👋 Hi! I can help you find government health & welfare schemes you are eligible for. Let's start with a few details.\n\n🎂 Please enter your age:",
+        "additionalFields": {}
+      },
+      "id": "eff26038-57e4-4046-b609-a0d151792a0b",
+      "name": "Welcome Message",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [
+        -224,
+        64
+      ],
+      "webhookId": "5e5b802a-1629-4964-a324-72e727c8a4ab",
+      "credentials": {
+        "telegramApi": {
+          "id": "og3kpOfClDVmA7n1",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "user_id",
+              "name": "user_id",
+              "value": "={{ $json.result.from }}",
+              "type": "string"
+            },
+            {
+              "id": "chat_id",
+              "name": "chat_id",
+              "value": "={{ $json.result.chat.id }}",
+              "type": "string"
+            },
+            {
+              "id": "state",
+              "name": "state",
+              "value": "collecting_age",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "b44f8aa3-d432-42cd-82f3-49b587545559",
+      "name": "Set Initial State",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.3,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.state }}",
+              "rightValue": "=collecting_age",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              },
+              "id": "1ec58313-0732-4fab-bfc6-00f58bac8d6f"
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "3ea4c6bf-5547-41ec-b0a0-bada75da47e3",
+      "name": "Check Collecting Age",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        -224,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "age",
+              "name": "age",
+              "value": "={{ $('Telegram Trigger').item.json.message.text }}",
+              "type": "number"
+            },
+            {
+              "id": "state",
+              "name": "state",
+              "value": "collecting_gender",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "74177b79-10d2-405d-9f51-2ed471c0dd1e",
+      "name": "Save Age",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.3,
+      "position": [
+        0,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{$('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "👫 Please select your gender:",
+        "replyMarkup": "inlineKeyboard",
+        "inlineKeyboard": {
+          "rows": [
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "Male",
+                    "additionalFields": {
+                      "callback_data": "gender_Male"
+                    }
+                  },
+                  {
+                    "text": "Female",
+                    "additionalFields": {
+                      "callback_data": "gender_Female"
+                    }
+                  },
+                  {
+                    "text": "Other",
+                    "additionalFields": {
+                      "callback_data": "gender_Other"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "additionalFields": {}
+      },
+      "id": "e8aa86f8-daeb-46e5-94b9-b80b8e4ad3d8",
+      "name": "Ask Gender",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [
+        224,
+        304
+      ],
+      "webhookId": "d880000a-b86b-4f59-a25c-4879ba16fc28",
+      "credentials": {
+        "telegramApi": {
+          "id": "og3kpOfClDVmA7n1",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $('Telegram Trigger').item.json.callback_query.data }}",
+              "rightValue": "=gender_",
+              "operator": {
+                "type": "string",
+                "operation": "startsWith"
+              },
+              "id": "ca1e95ee-72d8-413a-ac95-f8b82f12b47b"
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "id": "67338cf3-9bb4-4169-ba70-336943fce84b",
+      "name": "Check Gender Callback",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        -224,
+        464
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "gender",
+              "name": "gender",
+              "value": "={{ $json.gender }}",
+              "type": "string"
+            },
+            {
+              "id": "state",
+              "name": "state",
+              "value": "collecting_caste",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "de355508-6b79-4215-bf30-1ea038af9598",
+      "name": "Save Gender",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.3,
+      "position": [
+        0,
+        464
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Get User Data').item.json.chat_id }}",
+        "text": "🏷️ Please select your caste category:",
+        "replyMarkup": "inlineKeyboard",
+        "inlineKeyboard": {
+          "rows": [
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "General",
+                    "additionalFields": {
+                      "callback_data": "caste_AII"
+                    }
+                  },
+                  {
+                    "text": "SC",
+                    "additionalFields": {
+                      "callback_data": "caste_SC"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "ST",
+                    "additionalFields": {
+                      "callback_data": "caste_ST"
+                    }
+                  },
+                  {
+                    "text": "OBC",
+                    "additionalFields": {
+                      "callback_data": "caste_OBC"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "BPL",
+                    "additionalFields": {
+                      "callback_data": "caste_BPL"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "additionalFields": {}
+      },
+      "id": "a47c32d5-ce18-461b-853d-5e51457f1444",
+      "name": "Ask Caste",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [
+        224,
+        464
+      ],
+      "webhookId": "3b585d55-19ab-4546-ae66-887b33ee1143",
+      "credentials": {
+        "telegramApi": {
+          "id": "**",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $('Telegram Trigger').item.json.callback_query.data }}",
+              "rightValue": "caste_",
+              "operator": {
+                "type": "string",
+                "operation": "startsWith"
+              },
+              "id": "2751501d-2488-458b-8479-80fc4a54f6bb"
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "b32de081-9bdb-4019-86b0-ddcca7564394",
+      "name": "Check Caste Callback",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        -224,
+        624
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "caste",
+              "name": "caste",
+              "value": "={{$('Telegram Trigger').item.json.callback_query.data.replace('caste_', '') }}",
+              "type": "string"
+            },
+            {
+              "id": "state",
+              "name": "state",
+              "value": "collecting_state",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "a39a4eb9-f296-462a-bc8e-7e23b8be8bf6",
+      "name": "Save Caste",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.3,
+      "position": [
+        0,
+        624
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.callback_query.message.chat.id }}",
+        "text": "🏛️ Please select your state:",
+        "replyMarkup": "=",
+        "forceReply": {},
+        "replyKeyboardOptions": {},
+        "replyKeyboardRemove": {},
+        "additionalFields": {}
+      },
+      "id": "aebb30c9-86e2-4ccb-911b-06c625c89aed",
+      "name": "Ask State",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [
+        240,
+        624
+      ],
+      "webhookId": "25931be5-f3ff-4d78-a7dc-9e50d08a7ee2",
+      "credentials": {
+        "telegramApi": {
+          "id": "og3kpOfClDVmA7n1",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ \n  [\"andhra pradesh\",\"arunachal pradesh\",\"assam\",\"bihar\",\"chhattisgarh\",\"goa\",\"gujarat\",\"haryana\",\"himachal pradesh\",\"jharkhand\",\"karnataka\",\"kerala\",\"madhya pradesh\",\"maharashtra\",\"manipur\",\"meghalaya\",\"mizoram\",\"nagaland\",\"odisha\",\"punjab\",\"rajasthan\",\"sikkim\",\"tamil nadu\",\"telangana\",\"tripura\",\"uttar pradesh\",\"uttarakhand\",\"west bengal\",\"andaman and nicobar islands\",\"chandigarh\",\"dadra and nagar haveli and daman and diu\",\"delhi\",\"jammu and kashmir\",\"ladakh\",\"lakshadweep\",\"puducherry\"]\n    .includes($('Telegram Trigger').item.json.message.text.toLowerCase()) \n}}",
+              "rightValue": "={{ $('Telegram Trigger').item.json.message.text }}",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              },
+              "id": "56e3b191-ca5e-4b6c-9b76-e2494961a36b"
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "id": "9484b1ff-0e1a-4731-b2b9-d5ae6f37c503",
+      "name": "Check State Callback",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        -224,
+        800
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "c175d7c6-fbe2-469e-9241-39844e8c79b6",
+              "name": "user_state",
+              "value": "={{$('Telegram Trigger').item.json.message.text.replace('state_', '') }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "79df8b37-ec17-46c0-a645-6de2b47d0188",
+      "name": "Save State",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.3,
+      "position": [
+        0,
+        784
+      ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "17f1gWACNcTA3kvGX0pkSF7C-_4E3fsbwiz4gkf-qcmo",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1485956774,
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/17f1gWACNcTA3kvGX0pkSF7C-_4E3fsbwiz4gkf-qcmo/edit#gid=1485956774"
+        },
+        "options": {}
+      },
+      "id": "fee21533-f80d-4059-ae76-a6cb31cf0b68",
+      "name": "Get Schemes Data",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        224,
+        784
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "xEq95ojO19EjgPXO",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get user details\nconst userData = $('Get User Data').first().json;\nconst schemes = $input.all();\n\n// Relaxed filter: only remove impossible matches\nconst filteredSchemes = schemes.filter(scheme => {\n  const item = scheme.json;\n\n  // Age filter\n  if (userData.age) {\n    if (item['Min Age'] && userData.age < parseInt(item['Min Age'])) {\n      return false;\n    }\n    if (item['Max Age'] && userData.age > parseInt(item['Max Age'])) {\n      return false;\n    }\n  }\n\n  // Gender filter\n  if (userData.gender && item.Gender) {\n    const gender = item.Gender.toLowerCase();\n    if (gender !== 'all' && gender !== 'aii' && gender !== userData.gender.toLowerCase()) {\n      return false;\n    }\n  }\n\n  // Caste filter\n  if (userData.caste && item.Caste) {\n    const caste = item.Caste.toLowerCase();\n    if (caste !== 'all' && caste !== 'aii' && caste !== userData.caste.toLowerCase()) {\n      return false;\n    }\n  }\n\n  // State filter\n  if (userData.user_state && item['Eligible States']) {\n    const states = item['Eligible States'].toLowerCase();\n    if (states !== 'all india' && states!=='aii india' && !states.includes(userData.user_state.toLowerCase())) {\n      return false;\n    }\n  }\n\n  return true;\n});\n\n// Scoring system\nconst scoredSchemes = filteredSchemes.map(scheme => {\n  const item = scheme.json;\n  let score = 0;\n\n  // Age exact match inside range\n  if (userData.age && item['Min Age'] && item['Max Age']) {\n    const minAge = parseInt(item['Min Age']);\n    const maxAge = parseInt(item['Max Age']);\n    if (userData.age >= minAge && userData.age <= maxAge) {\n      score += 3;\n    }\n  }\n\n  // Gender scoring\n  if (userData.gender && item.Gender) {\n    if (item.Gender === userData.gender) {\n      score += 2; // exact gender\n    } else if (item.Gender.toLowerCase() === 'all' || item.Gender.toLowerCase()=='aii') {\n      score += 1; // generic gender\n    }\n  }\n\n  // Caste scoring\n  if (userData.caste && item.Caste) {\n    if (item.Caste === userData.caste) {\n      score += 2; // exact caste\n    } else if (item.Caste.toLowerCase() === 'aii' || item.Caste.toLowerCase()=='all' ) {\n      score += 1; // generic caste\n    }\n  }\n\n  // State scoring\n  if (userData.user_state && item['Eligible States']) {\n    const states = item['Eligible States'].toLowerCase();\n    if (states.includes(userData.user_state.toLowerCase())) {\n      score += 2; // exact state\n    } else if (states === 'aii india'|| states === 'all india') {\n      score += 1; // generic state\n    }\n  }\n\n  return {\n    ...scheme,\n    json: {\n      ...item,\n      matchScore: score\n    }\n  };\n});\n\n// Sort schemes by score (highest first)\nconst sortedSchemes = scoredSchemes.sort((a, b) => b.json.matchScore - a.json.matchScore);\n\n// Pagination\nconst currentPage = parseInt(userData.current_page || 0);\nconst pageSize = 5;\nconst startIndex = currentPage * pageSize;\nconst endIndex = startIndex + pageSize;\n\nconst paginatedSchemes = sortedSchemes.slice(startIndex, endIndex);\nconst hasMore = endIndex < sortedSchemes.length;\n\nreturn [{\n  json: {\n    schemes: paginatedSchemes.map(s => s.json),\n    hasMore: hasMore,\n    totalSchemes: sortedSchemes.length,\n    currentPage: currentPage,\n    userData: userData\n  }\n}];"
+      },
+      "id": "e073d84b-76ea-485c-a79c-49edafab186d",
+      "name": "Filter and Score Schemes",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        448,
+        784
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $input.first().json;\nconst schemes = data.schemes;\nconst userData = data.userData;\nconst hasMore = data.hasMore;\n\nif (schemes.length === 0) {\n  const noSchemesMessage = `😔 No schemes found matching your criteria.\n\n🔄 Try:\n• Expanding to nearby states\n• Different caste category\n• Check if age requirements are flexible\n\nType /start to Reset the details.\n`;\n  \n  return [{\n    json: {\n      chatId: userData.chat_id,\n      text: noSchemesMessage\n    }\n  }];\n}\n\nlet message = `🎯 Based on your details (Age: ${userData.age}, Gender: ${userData.gender}, Caste: ${userData.caste}, State: ${userData.user_state}), here are some schemes for you:\\n\\n`;\n\nschemes.forEach((scheme, index) => {\n  const emoji = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣','6️⃣','7️⃣'][index] || '🔹';\n  \n  message += `${emoji} ${scheme['Scheme Name']}\\n`;\n  if (scheme.Description) {\n    message += `📝 ${scheme.Description}\\n`;\n  }\n  if (scheme.Benefits) {\n    message += `💰 Benefits: ${scheme.Benefits}\\n`;\n  }\n  if (scheme['Steps to Avail']) {\n    message += `🛠️ Steps: ${scheme['Steps to Avail']}\\n`;\n  }\n  if (scheme.Eligibility) {\n    message += `✅ Eligibility: ${scheme.Eligibility}\\n`;\n  }\n  if (scheme['Official Portal / Notes']) {\n    message += `🔗 More Info: ${scheme['Official Portal / Notes']}\\n`;\n  }\n  message += `\\n`;\n  // extra line break between schemes\n  \n});\n\nmessage +=`Type /start to Reset the details`;\n// message += `\\n💡 Tap scheme number (1, 2, 3...) for full details`;\n\nconst keyboard = {\n  inlineKeyboard: {\n    rows: []\n  }\n};\n\n// Add scheme buttons\nconst schemeButtons = schemes.map((scheme, index) => ({\n  text: `${index + 1}`,\n  callbackData: `scheme_${index}_${data.currentPage}`\n}));\n\n// Split into rows of 3\nfor (let i = 0; i < schemeButtons.length; i += 3) {\n  keyboard.inlineKeyboard.rows.push({\n    buttons: schemeButtons.slice(i, i + 3)\n  });\n}\n\n// Add \"Show More\" button if there are more schemes\nif (hasMore) {\n  keyboard.inlineKeyboard.rows.push({\n    buttons: [{\n      text: \"🔍 Show More Schemes\",\n      callbackData: `more_schemes_${data.currentPage + 1}`\n    }]\n  });\n}\n\nreturn [{\n  json: {\n    chatId: userData.chat_id,\n    text: message,\n    replyMarkup: keyboard, // ✅ object, not string\n    schemes: schemes\n  }\n}];\n"
+      },
+      "id": "5fa8cae5-a335-42ac-9b5e-378c3f519e09",
+      "name": "Format Schemes Message",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        656,
+        784
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.chatId }}",
+        "text": "={{ $json.text }}",
+        "replyMarkup": "inlineKeyboard",
+        "inlineKeyboard": {
+          "rows": [
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "🔍 Show More Schemes",
+                    "additionalFields": {
+                      "callback_data": "={{ `more_schemes_${$('Get User Data').first().json.current_page+1}` }}"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "additionalFields": {
+          "disable_web_page_preview": false
+        }
+      },
+      "id": "d82d70bf-af05-4d6e-ae34-9f06522e172f",
+      "name": "Send Schemes Message",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [
+        880,
+        784
+      ],
+      "webhookId": "50a670fe-8161-4904-b840-9aaa009e8069",
+      "credentials": {
+        "telegramApi": {
+          "id": "og3kpOfClDVmA7n1",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $('Telegram Trigger').item.json.callback_query.data }}",
+              "rightValue": "more_schemes_",
+              "operator": {
+                "type": "string",
+                "operation": "startsWith"
+              },
+              "id": "45c195f9-69bf-4982-b16a-56d2d078fc5c"
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "id": "77fb6718-908f-49e6-8f30-2ce8e016a9b6",
+      "name": "Check More Schemes",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        -448,
+        1184
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "current_page",
+              "name": "current_page",
+              "value": "={{ parseInt($('Telegram Trigger').item.json.callback_query.data.split('_')[2]) }}",
+              "type": "number"
+            },
+            {
+              "id": "5b17cce1-1808-4bed-aba7-ffd143152b21",
+              "name": "",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "76e20e0c-c842-4e69-a42d-b3be53396396",
+      "name": "Update Page",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.3,
+      "position": [
+        -224,
+        1184
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "current_page",
+              "name": "current_page",
+              "value": 0,
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "a96065bc-346d-4e6b-ac34-0447160a9346",
+      "name": "Reset to First Page",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.3,
+      "position": [
+        -224,
+        1392
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const input = $input.first().json;\n\nconst userId = input.message?.from?.id || input.callback_query?.from?.id;\nconst chatId = input.message?.chat?.id || input.callback_query?.message?.chat?.id;\n\nconst store = $getWorkflowStaticData('global');\n\n// Always start fresh if /start is used\nif (input.message?.text === '/start') {\n  store[userId] = {\n    user_id: userId,\n    chat_id: chatId,\n    state: 'collecting_age',\n    current_page: 0,\n    age: null,\n    gender: null,\n    caste: null,\n    user_state: null\n  };\n}\n\n// Load data again after reset check\nlet userData = store[userId] || {\n  user_id: userId,\n  chat_id: chatId,\n  state: 'new',\n  current_page: 0,\n  age: null,\n  gender: null,\n  caste: null,\n  user_state: null\n};\n\n// Update from current input\nif (!isNaN(parseInt(input.message?.text))) {\n  userData.age = parseInt(input.message.text);\n  userData.state = 'collecting_age';\n} else if (input.callback_query?.data?.startsWith('gender_')) {\n  userData.gender = input.callback_query.data.replace('gender_', '');\n  userData.state = 'collecting_caste';\n} else if (input.callback_query?.data?.startsWith('caste_')) {\n  userData.caste = input.callback_query.data.replace('caste_', '');\n  userData.state = 'collecting_state';\n} else if (input.callback_query?.data?.startsWith('state_')) {\n  userData.user_state = input.callback_query.data.replace('state_', '');\n  userData.state = 'ready_to_search';\n} else if (input.message?.text) {\n  // For typing state directly\n  userData.user_state = input.message.text.trim();\n  userData.state = 'ready_to_search';\n}\nelse if(input.callback_query?.data?.startsWith('more_schemes_')){\n  userData.current_page= parseInt($input.first().json.callback_query.data.split('_')[2]);\n}\n\n// Save back\nstore[userId] = userData;\n\nreturn [{ json: userData }];\n"
+      },
+      "id": "782cba9e-7281-448b-b704-bc9cc30e8e94",
+      "name": "Get User Data",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        0,
+        1392
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $('Get User Data').first()?.json?.state || 'new' }}",
+              "rightValue": "collecting_state",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "095b568b-b9ec-409b-a901-d529259e7bf4",
+      "name": "Check Collecting State",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        -224,
+        944
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ isNaN(parseInt($('Telegram Trigger').item.json.message.text)) }}",
+              "rightValue": false,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              },
+              "id": "4bdafbb9-15c2-4017-8050-8a2c85a28e20"
+            },
+            {
+              "leftValue": "={{ parseInt($('Telegram Trigger').item.json.message.text) }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              },
+              "id": "6ddc3a5f-ec79-4c1b-9cc1-7a5cd6f67d29"
+            },
+            {
+              "leftValue": "={{ parseInt($('Telegram Trigger').item.json.message.text) }}",
+              "rightValue": 100,
+              "operator": {
+                "type": "number",
+                "operation": "lte"
+              },
+              "id": "b2ab2bd6-aa24-4796-a1b9-cf34e40d7609"
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "f6235554-4b8a-4c09-9ee3-c8ec9ee79a26",
+      "name": "Validate Age",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        0,
+        176
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.chat_id }}",
+        "text": "❌ Please enter a valid age (1-100 years):",
+        "additionalFields": {}
+      },
+      "id": "352a245b-2d2d-4a59-b0e8-5ff54446157c",
+      "name": "Invalid Age Message",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [
+        224,
+        160
+      ],
+      "webhookId": "0d47b947-c47d-4d42-9efe-5efe387f0999",
+      "credentials": {
+        "telegramApi": {
+          "id": "og3kpOfClDVmA7n1",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.chat_id }}",
+        "text": "Hi! 👋 I’m your Health & Govt Schemes Assistant Bot. Type /start to explore schemes or ask me about any state-specific health program!\"",
+        "additionalFields": {}
+      },
+      "id": "12f63902-c14c-4991-81b0-aaf21d0e7fe2",
+      "name": "Fallback Message",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [
+        -480,
+        1648
+      ],
+      "webhookId": "40a20b4f-ee5e-44f0-9431-2ab902c934f3",
+      "credentials": {
+        "telegramApi": {
+          "id": "og3kpOfClDVmA7n1",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Handle end of schemes scenario\nconst data = $input.first().json;\nconst hasMore = data.hasMore;\nconst currentPage = data.currentPage;\n\nif (!hasMore && currentPage >= 0) {\n  return [{\n    json: {\n      chatId: data.userData.chat_id,\n      text: \"🔚 You've seen all available schemes matching your criteria!\\n\\n💡 To see schemes again, type /start for a new search.\",\n      replyMarkup: {\n        inlineKeyboard: {\n          rows: [\n            {\n              buttons: [\n                {\n                  text: \"🔄 Start New Search\",\n                  callbackData: \"new_search\"\n                }\n              ]\n            }\n          ]\n        }\n      }\n    }\n  }];\n}\n\n// Default case → just pass data forward\nreturn [$input.first()];\n"
+      },
+      "id": "d0375952-9386-4234-af91-42995d74f603",
+      "name": "Handle End of Schemes",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        448,
+        1088
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get User Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Start Command": {
+      "main": [
+        [
+          {
+            "node": "Welcome Message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Check Collecting Age",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Welcome Message": {
+      "main": [
+        [
+          {
+            "node": "Set Initial State",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Collecting Age": {
+      "main": [
+        [
+          {
+            "node": "Validate Age",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Check Gender Callback",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Age": {
+      "main": [
+        [
+          {
+            "node": "Save Age",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Invalid Age Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save Age": {
+      "main": [
+        [
+          {
+            "node": "Ask Gender",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Gender Callback": {
+      "main": [
+        [
+          {
+            "node": "Save Gender",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Check Caste Callback",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save Gender": {
+      "main": [
+        [
+          {
+            "node": "Ask Caste",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Caste Callback": {
+      "main": [
+        [
+          {
+            "node": "Save Caste",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Check State Callback",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save Caste": {
+      "main": [
+        [
+          {
+            "node": "Ask State",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check State Callback": {
+      "main": [
+        [
+          {
+            "node": "Save State",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Check Collecting State",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save State": {
+      "main": [
+        [
+          {
+            "node": "Get Schemes Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Schemes Data": {
+      "main": [
+        [
+          {
+            "node": "Filter and Score Schemes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter and Score Schemes": {
+      "main": [
+        [
+          {
+            "node": "Format Schemes Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Schemes Message": {
+      "main": [
+        [
+          {
+            "node": "Handle End of Schemes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Handle End of Schemes": {
+      "main": [
+        [
+          {
+            "node": "Send Schemes Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check More Schemes": {
+      "main": [
+        [
+          {
+            "node": "Update Page",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Fallback Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Page": {
+      "main": [
+        [
+          {
+            "node": "Get Schemes Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Reset to First Page": {
+      "main": [
+        [
+          {
+            "node": "Get Schemes Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get User Data": {
+      "main": [
+        [
+          {
+            "node": "Check Start Command",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Collecting State": {
+      "main": [
+        [
+          {
+            "node": "Save State",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Check More Schemes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "ca785152-6980-45be-b55b-64e081f1aea2",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "115a167edba23d7d6150a924c1f1767f2f71346168a3577dde2759f1b26abdc6"
+  },
+  "id": "eeLbodQfdrKVWZYf",
+  "tags": []
+}
