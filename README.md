@@ -45,9 +45,10 @@ When you import in n8n, you will need to **add your own credentials** for Telegr
 - Add token to n8n Telegram credentials
 
 ### **Google Sheet**
-- Upload your schemes data to Google Sheets  
-- Connect it via n8n Google Sheets node  
-- Make sure your workflow reads from the correct sheet
+- The workflow already points to a Google Sheet that contains all scheme data  
+- Users do **not** need to create an Excel or a new Google Sheet again  
+- They only need to connect their own Google Sheets credentials in n8n  
+- Once credentials are added, the workflow will read from the same sheet automatically
 
 ---
 
